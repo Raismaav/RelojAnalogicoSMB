@@ -1,19 +1,36 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.Calendar;
 
 public class Ventana extends JFrame implements Runnable {
-    private static final int PIXEL_SHAPE = 1, APPBAR_HEIGT = 28;
+    private static final int PIXEL_SHAPE = 3, APPBAR_HEIGT = 0;
+    private static final int[][] STAGE = {
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 9, 0, 0, 11, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 2, 3, 2, 0, 0, 0, 0, 0, 0, 4, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0},
+            {0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    };
     private Image background, buffer;
     private Thread hilo;
     private int min, hora, sec;
-    private int manecillaSegundos = 100, manecillaMinutos = 70, manecillaHora = 50;
+    private int manecillaSegundos = 48 * PIXEL_SHAPE, manecillaMinutos = 32 * PIXEL_SHAPE, manecillaHora = 16 * PIXEL_SHAPE;
 
     public Ventana() {
         setTitle("Reloj Analógico");
         setResizable(false);
-        setSize(384,256);
+        setSize(PIXEL_SHAPE * 384,PIXEL_SHAPE * 256 + APPBAR_HEIGT);
         setLayout(null);
         setVisible(true);
         setLocationRelativeTo(null);
@@ -45,17 +62,68 @@ public class Ventana extends JFrame implements Runnable {
         graphics.setColor(Color.BLUE);
         graphics.drawRect(0, 0, getWidth(), getHeight());
 
-        blockPainter (128, APPBAR_HEIGT + 64, backgroundBuffer);
+        blockSelector(backgroundBuffer);
         graphics.drawImage(buffer,0,0,this);
     }
 
-    private void blockPainter (int x, int y, Graphics graphics) {
-        Block block = new Block();
-        Color[][] pixels = block.getFloorBlock();
+    private void blockSelector(Graphics graphics) {
+        BlocksTextures blocks = new BlocksTextures();
+        for (int i = 0; i <= STAGE.length - 1; i++) {
+            for (int j = 0; j <= STAGE[i].length - 1; j++) {
+                switch (STAGE[i][j]) {
+                    case 0:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getSkyBlock(), graphics);
+                        break;
+
+                    case 1:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getFloorBlock(), graphics);
+                        break;
+
+                    case 2:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getBrickBlock(), graphics);
+                        break;
+
+                    case 3:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getQuestionBlock(), graphics);
+                        break;
+
+                    case 4:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getCoinBlock(), graphics);
+                        break;
+
+                    case 5:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getMario(), graphics);
+                        break;
+
+                    case 6:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getGoomba(), graphics);
+                        break;
+
+                    case 7:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getNumberThreeBlock(), graphics);
+                        break;
+
+                    case 8:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getNumberSixBlock(), graphics);
+                        break;
+
+                    case 9:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getNumberNineBlock(), graphics);
+                        break;
+
+                    case 10:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getNumberTwelveBlock(), graphics);
+                        break;
+                }
+            }
+        }
+    }
+
+    private void blockPainter(int x, int y, Color[][] pixels, Graphics graphics) {
         for (int i = 0; i <= pixels.length - 1; i++) {
             for (int j = 0; j <= pixels[i].length - 1; j++) {
                 graphics.setColor(pixels[i][j]);
-                graphics.fillRect(PIXEL_SHAPE * (i + x), PIXEL_SHAPE * (j + y), PIXEL_SHAPE, PIXEL_SHAPE);
+                graphics.fillRect(PIXEL_SHAPE * (j + x), PIXEL_SHAPE * (i + y), PIXEL_SHAPE, PIXEL_SHAPE);
             }
         }
     }
@@ -80,13 +148,13 @@ public class Ventana extends JFrame implements Runnable {
             anguloSec = calculoAnguloMS(sec);
 
             gbuffer.setColor(Color.RED);
-            gbuffer.drawLine(getWidth()/2, getHeight()/2, getWidth() / 2 + (int) getX(anguloHora, manecillaHora), getHeight() / 2 + (int) getY(anguloHora, manecillaHora));
+            gbuffer.drawLine(72 * PIXEL_SHAPE, 88 * PIXEL_SHAPE, 72 * PIXEL_SHAPE + (int) getX(anguloHora, manecillaHora), 88 * PIXEL_SHAPE + (int) getY(anguloHora, manecillaHora));
 
             gbuffer.setColor(Color.BLUE);
-            gbuffer.drawLine(getWidth()/2, getHeight()/2, getWidth() / 2 + (int) getX(anguloMin, manecillaMinutos), getHeight() / 2 + (int) getY(anguloMin, manecillaMinutos));
+            gbuffer.drawLine(72 * PIXEL_SHAPE, 88 * PIXEL_SHAPE, 72 * PIXEL_SHAPE + (int) getX(anguloMin, manecillaMinutos), 88 * PIXEL_SHAPE + (int) getY(anguloMin, manecillaMinutos));
 
             gbuffer.setColor(Color.BLACK);
-            gbuffer.drawLine(getWidth()/2, getHeight()/2, getWidth() / 2 + (int) getX(anguloSec, manecillaSegundos), getHeight() / 2 + (int) getY(anguloSec, manecillaSegundos));
+            gbuffer.drawLine(72 * PIXEL_SHAPE, 88 * PIXEL_SHAPE, 72 * PIXEL_SHAPE + (int) getX(anguloSec, manecillaSegundos), 88 * PIXEL_SHAPE + (int) getY(anguloSec, manecillaSegundos));
             graphics.drawImage(buffer,0,0,this);
         }
     }
