@@ -17,8 +17,8 @@ public class Ventana extends JFrame implements Runnable {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 2, 3, 2, 0, 0, 0, 0, 0, 0, 4, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0},
-            {0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 15, 0, 0, 0},
+            {0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 12, 13, 0, 0, 0},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     };
@@ -113,6 +113,26 @@ public class Ventana extends JFrame implements Runnable {
 
                     case 10:
                         blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getNumberTwelveBlock(), graphics);
+                        break;
+
+                    case 11:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getFireBarBlock(), graphics);
+                        break;
+
+                    case 12:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getLeftPipelineBlock(), graphics);
+                        break;
+
+                    case 13:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getRightPipelineBlock(), graphics);
+                        break;
+
+                    case 14:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getTopLeftPipelineBlock(), graphics);
+                        break;
+
+                    case 15:
+                        blockPainter(16 * j, APPBAR_HEIGT + (16 * i), blocks.getTopRightPipelineBlock(), graphics);
                         break;
                 }
             }
